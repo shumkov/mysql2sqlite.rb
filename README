@@ -1,0 +1,3 @@
+MySQL2Sqlite.rb
+
+A Ruby script for exporting MySQL databases to Sqlite databases.
