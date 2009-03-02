@@ -1,7 +1,6 @@
 #!/usr/bin/env ruby
 
 require 'fileutils'
-require 'pp'
 require 'yaml'
 
 
@@ -12,14 +11,11 @@ class MySQL2SqliteConverter
   def initialize( args )
     init_result = ( args.length == 1 ) ? init_from_yaml( args ) : init_from_command_line( args )
 
-    @file_deletion_delay = 3
-    
     if ( init_result && @database_name && @username && @password )
-      @output_file = @database_name + ".sql"
-      @sqlite_database = @database_name + ".sqlite"
+      @file_deletion_delay = 10
+      @output_file, @sqlite_database = @database_name + ".sql", @database_name + ".sqlite"
     else
-      puts "ERROR: Could not initialize MySQL2SqliteConverter: "
-      pp( args )
+      puts "ERROR: Failed to initialize MySQL2SqliteConverter" 
       exit
     end
   end
@@ -57,7 +53,7 @@ private
 
   
   def init_from_yaml( args )
-    if ( true == File.exists?( args[0] ) )
+    if ( File.exists?( args[0] )
       ruby_obj = YAML::load_file( args[0] )
       config = ruby_obj[ 'config' ]
       
@@ -136,7 +132,6 @@ end
 
 
 if __FILE__ == $0
-  # Requires: database name, database user and password or a config file
   if ( ARGV.length == 0 )
     puts "Usage: ./mysql2sqlite.rb database_name username password "
     puts "   or: ./mysql2sqlite.rb config_file.yaml"
