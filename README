@@ -6,7 +6,22 @@ A Ruby script for exporting MySQL databases to Sqlite databases.
 
 == USAGE:
 
-./mysql2sqlite.rb database_name database_user database_password
+Can be executed by either passing the database connection values directly:
+
+    ./mysql2sqlite.rb database_name database_user database_password
+
+or by passing it the path to a YAML-based configuration file:
+
+    ./mysql2sqlite.rb config.yaml
+
+== YAML Configuration File
+
+If you're familiar with Rails or Merb, this format will seem uncanny:
+
+config:
+  database: database_name
+  username: database_username
+  password: database_password
 
 == KNOWN ISSUES:
 

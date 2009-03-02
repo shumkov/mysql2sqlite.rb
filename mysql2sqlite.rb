@@ -1,20 +1,27 @@
 #!/usr/bin/env ruby
 
 require 'fileutils'
+require 'pp'
+require 'yaml'
 
 
 # ------------------------------ Classes ------------------------------ #
 
 
 class MySQL2SqliteConverter
-  def initialize( database_name, username, password )
-    @database_name = database_name
-    @username = username
-    @password = password
-    @rm_delay = 3
+  def initialize( args )
+    init_result = ( args.length == 1 ) ? init_from_yaml( args ) : init_from_command_line( args )
+
+    @file_deletion_delay = 3
     
-    @output_file = @database_name + ".sql"
-    @sqlite_database = @database_name + ".sqlite"
+    if ( init_result && @database_name && @username && @password )
+      @output_file = @database_name + ".sql"
+      @sqlite_database = @database_name + ".sqlite"
+    else
+      puts "ERROR: Could not initialize MySQL2SqliteConverter: "
+      pp( args )
+      exit
+    end
   end
   
   
@@ -48,6 +55,29 @@ class MySQL2SqliteConverter
   
 private 
 
+  
+  def init_from_yaml( args )
+    if ( true == File.exists?( args[0] ) )
+      ruby_obj = YAML::load_file( args[0] )
+      config = ruby_obj[ 'config' ]
+      
+      return ( !config.nil? ) ? init( config['database'], config['username'], config['password'] ) : false
+    else
+      return false
+    end
+  end
+  
+  
+  def init_from_command_line( args )
+    return ( 3 == args.length ) ? init( args[0], args[1], args[2] ) : false
+  end
+  
+  
+  def init( database_name, username, password )
+    @database_name, @username, @password = database_name, username, password
+    return true
+  end
+
 
   def handle_existing_files()
     handle_existing_file( @output_file )
@@ -58,8 +88,8 @@ private
   def handle_existing_file( file )
     # TODO: Replace this with a query to the user, defaulting to Y
     if ( File.exists?( file ) )
-      (1..@rm_delay).each do |count|
-        puts "WARNING: File #{file} already exists and will be over-written in  #{@rm_delay - count} seconds. Press ctl-C to Quit"
+      (1..@file_deletion_delay).each do |count|
+        puts "WARNING: File #{file} already exists and will be over-written in  #{@file_deletion_delay - count} seconds. Press ctl-C to Quit"
         sleep 1
       end
       
@@ -106,13 +136,14 @@ end
 
 
 if __FILE__ == $0
-  # Requires: database name, database user and password
+  # Requires: database name, database user and password or a config file
   if ( ARGV.length == 0 )
-    puts "Usage: $0 <database name> $1 <database user> $2 <database password>"
+    puts "Usage: ./mysql2sqlite.rb database_name username password "
+    puts "   or: ./mysql2sqlite.rb config_file.yaml"
     exit
   end
 
-  conv = MySQL2SqliteConverter.new( ARGV[0], ARGV[1], ARGV[2] )
+  conv = MySQL2SqliteConverter.new( ARGV )
   result = conv.mysql_to_sqlite()
   
   puts ( result ) ? "Done" : "Output failed"
