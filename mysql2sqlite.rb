@@ -12,7 +12,7 @@ class MySQL2SqliteConverter
     @database_name = database_name
     @username = username
     @password = password
-    @rm_delay = 1
+    @rm_delay = 10
     
     @output_file = @database_name + ".sql"
     @sqlite_file = @database_name + ".sqlite"
@@ -20,9 +20,10 @@ class MySQL2SqliteConverter
   
   
   def handle_existing_file()
+    # TODO: Replace this with a query to the user, defaulting to Y
     if ( File.exists?( @output_file ) )
       (1..@rm_delay).each do |count|
-        puts "Sqlite file #{@output_file} already exists. This file will be overwritten in  #{@rm_delay - count} seconds. Press ctl-C to stop"
+        puts "SQL file #{@output_file} already exists and will be over-written in  #{@rm_delay - count} seconds. Press ctl-C to Quit"
         sleep 1
       end
       
@@ -84,8 +85,6 @@ if __FILE__ == $0
 
   conv = MySQL2SqliteConverter.new( ARGV[0], ARGV[1], ARGV[2] )
 
-  # If an output file already exists by this name, warn the user and loop to give them a chance to kill this script
-  # If they don't kill the script, remove the file
   conv.handle_existing_file()
   conv.mysql_to_sqlite()
   
