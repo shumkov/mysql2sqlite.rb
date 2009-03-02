@@ -1,10 +1,10 @@
 = mysql2sqlite.rb
 
-== DESCRIPTION:
+== DESCRIPTION
 
 A Ruby script for exporting MySQL databases to Sqlite databases.
 
-== USAGE:
+== USAGE
 
 Can be executed by either passing the database connection values directly:
 
@@ -14,7 +14,7 @@ or by passing it the path to a YAML-based configuration file:
 
     ./mysql2sqlite.rb config.yaml
 
-== YAML Configuration File
+== YAML CONFIG FILE
 
 If you're familiar with Rails or Merb, this format will seem uncanny:
 
@@ -23,11 +23,11 @@ config:
   username: database_username
   password: database_password
 
-== KNOWN ISSUES:
+== KNOWN ISSUES
 
 This is version 0.0. I suspect it is inefficient as all get-out and likely fails on some databases (in other words: currently, it works for me).
 
-== LICENSE:
+== LICENSE
 
 (The MIT License)
 
