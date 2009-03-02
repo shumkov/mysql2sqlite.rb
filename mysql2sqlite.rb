@@ -7,7 +7,6 @@ require 'fileutils'
 
 
 class MySQL2SqliteConverter
-  
   def initialize( database_name, username, password )
     @database_name = database_name
     @username = username
@@ -77,7 +76,7 @@ end
 
 
 if __FILE__ == $0
-  # Need at least one parameter passed in as the name of the database to extract data from
+  # Requires: database name, database user and password
   if ( ARGV.length == 0 )
     puts "Usage: $0 <database name> $1 <database user> $2 <database password>"
     exit 0
@@ -86,7 +85,7 @@ if __FILE__ == $0
   conv = MySQL2SqliteConverter.new( ARGV[0], ARGV[1], ARGV[2] )
 
   conv.handle_existing_file()
-  conv.mysql_to_sqlite()
+  result = conv.mysql_to_sqlite()
   
   exit 0
 end
