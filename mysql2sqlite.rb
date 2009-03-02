@@ -53,11 +53,11 @@ private
 
   
   def init_from_yaml( args )
-    if ( File.exists?( args[0] )
+    if ( File.exists?( args[0] ) )
       ruby_obj = YAML::load_file( args[0] )
       config = ruby_obj[ 'config' ]
       
-      return ( !config.nil? ) ? init( config['database'], config['username'], config['password'] ) : false
+      return ( !config.nil? ) ? init( config['database'], config['username'], config['password'], config['overwrite'] ) : false
     else
       return false
     end
@@ -65,12 +65,13 @@ private
   
   
   def init_from_command_line( args )
-    return ( 3 == args.length ) ? init( args[0], args[1], args[2] ) : false
+    overwrite = ( args[3] && ( "1" == args[3] || "true" == args[3] ) ) ? true : false
+    return ( 3 <= args.length ) ? init( args[0], args[1], args[2], overwrite ) : false
   end
   
   
-  def init( database_name, username, password )
-    @database_name, @username, @password = database_name, username, password
+  def init( database_name, username, password, overwrite_files )
+    @database_name, @username, @password, @overwrite_files = database_name, username, password, overwrite_files
     return true
   end
 
@@ -84,9 +85,11 @@ private
   def handle_existing_file( file )
     # TODO: Replace this with a query to the user, defaulting to Y
     if ( File.exists?( file ) )
-      (1..@file_deletion_delay).each do |count|
-        puts "WARNING: File #{file} already exists and will be over-written in  #{@file_deletion_delay - count} seconds. Press ctl-C to Quit"
-        sleep 1
+      if ( true != @overwrite_files )
+        (1..@file_deletion_delay).each do |count|
+          puts "WARNING: File #{file} already exists and will be over-written in  #{@file_deletion_delay - count} seconds. Press ctl-C to Quit"
+          sleep 1
+        end
       end
       
       FileUtils.rm( file ) 
