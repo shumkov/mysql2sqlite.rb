@@ -72,23 +72,17 @@ class MySQL2SqliteConverter
 end
 
 
-# ------------------------------ Functions ------------------------------ #
-
-
-
-
-
 # ------------------------------ Main ------------------------------ #
 
 
 if __FILE__ == $0
   # Need at least one parameter passed in as the name of the database to extract data from
   if ( ARGV.length == 0 )
-    puts "Usage: $0 <database name>, ie: ./mysql2sqlite.rb sales_invoices"
+    puts "Usage: $0 <database name> $1 <database user> $2 <database password>"
     exit 0
   end
 
-  conv = MySQL2SqliteConverter.new( ARGV[0], "root", "dataisasdatadoes" )
+  conv = MySQL2SqliteConverter.new( ARGV[0], ARGV[1], ARGV[2] )
 
   # If an output file already exists by this name, warn the user and loop to give them a chance to kill this script
   # If they don't kill the script, remove the file
