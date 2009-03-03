@@ -52,7 +52,16 @@ YAML file: add "true" as the 'overwrite' property to over-write without warning:
 
 == KNOWN ISSUES
 
-I know this is version 0.0 and thus I suspect it is inefficient as all get-out and likely fails on some databases (in other words: currently, it works for me).
+I know this is version 0.2 and thus I suspect it is inefficient as all get-out and likely fails on some databases (in other words: currently, it works for me). That said, it cleanly dumps the entire Rails app I needed it to dump and the Sqlite database seems just dandy. Give it a try, let me know.
+
+
+== EXPECTED FUTURE FEATURES
+
+- The ability to specify which tables to dump and exclude all others. This feature will likely only be available when configured via the YAML file.
+
+- Better exception handling (actually, any exception handling at all). Right now it just chokes or steamrollers when it runs into a problem (like spelling your db password incorrectly).
+
+- The ability to exclude the intermediary SQL file via configuration (or perhaps make it opt-in).
 
 
 == LICENSE
