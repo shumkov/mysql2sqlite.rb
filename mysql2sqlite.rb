@@ -8,6 +8,8 @@ require 'yaml'
 
 
 class MySQL2SqliteConverter
+  
+  
   def initialize( args )
     init_result = ( args.length == 1 ) ? init_from_yaml( args ) : init_from_command_line( args )
 
@@ -26,7 +28,9 @@ class MySQL2SqliteConverter
     
     arr = Array[]
 
-    IO.popen( "mysqldump -u #{@username} -p#{@password} --compact --compatible=ansi --complete-insert --skip-extended-insert --default-character-set=binary #{@database_name}" ) do |pipe|
+    mysqldump_str = generate_mysqldump_str()
+
+    IO.popen( mysqldump_str ) do |pipe|
       pipe.each_line do |line|
         next if contains_disallowed_sql( line )
         
@@ -57,7 +61,7 @@ private
       ruby_obj = YAML::load_file( args[0] )
       config = ruby_obj[ 'config' ]
       
-      return ( !config.nil? ) ? init( config['database'], config['username'], config['password'], config['overwrite'] ) : false
+      return ( !config.nil? ) ? init( config['database'], config['username'], config['password'], config['overwrite'], config['tables'] ) : false
     else
       return false
     end
@@ -70,8 +74,8 @@ private
   end
   
   
-  def init( database_name, username, password, overwrite_files )
-    @database_name, @username, @password, @overwrite_files = database_name, username, password, overwrite_files
+  def init( database_name, username, password, overwrite_files = true, tables = nil )
+    @database_name, @username, @password, @overwrite_files, @tables = database_name, username, password, overwrite_files, tables
     return true
   end
 
@@ -94,6 +98,14 @@ private
       
       FileUtils.rm( file ) 
     end
+  end
+  
+  
+  def generate_mysqldump_str()
+    table_str = ( nil != @tables ) ? @tables.join( ' ' ) : ''
+
+    mysqldump_str = "mysqldump -u #{@username} -p#{@password} --compact --compatible=ansi --complete-insert --skip-extended-insert --default-character-set=binary #{@database_name} " + table_str
+    return mysqldump_str
   end
   
   

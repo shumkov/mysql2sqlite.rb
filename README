@@ -2,7 +2,7 @@
 
 == DESCRIPTION
 
-A Ruby script for exporting MySQL databases to Sqlite databases.
+A Ruby script to convert and export MySQL databases to Sqlite databases.
 
 
 == USAGE
