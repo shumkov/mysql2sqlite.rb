@@ -75,8 +75,6 @@ I know this is version 0.2 and thus I suspect it is inefficient as all get-out a
 
 == EXPECTED FUTURE FEATURES
 
-- The ability to specify which tables to dump and exclude all others. This feature will likely only be available when configured via the YAML file.
-
 - Better exception handling (actually, any exception handling at all). Right now it just chokes or steamrollers when it runs into a problem (like spelling your db password incorrectly).
 
 - The ability to exclude the intermediary SQL file via configuration (or perhaps make it opt-in).
