@@ -35,6 +35,8 @@ If you're familiar with Rails or Merb, this format will seem uncanny:
 
 == OPTIONAL PARAMETERS
 
+=== OVERWRITE
+
 By default the script warns if if it is about to over-write already-existing files. However this can be explicitly configured via the following:
 
 Command line: add "true" or "1" as the final parameter to over-write without warning:
@@ -48,6 +50,22 @@ YAML file: add "true" as the 'overwrite' property to over-write without warning:
     username: database_username
     password: database_password
     overwrite: true
+
+=== TABLES
+
+To explicitly specify which tables are to be output, add the table names to the YAML file:
+
+  config:
+    database: database_name
+    username: database_username
+    password: database_password
+    overwrite: true
+    tables:
+      - users
+      - messages
+      - blog_posts
+      
+This parameter is not available via command-line configuration.
 
 
 == KNOWN ISSUES
