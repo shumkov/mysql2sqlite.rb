@@ -8,16 +8,16 @@ require 'yaml'
 
 
 class MySQL2SqliteConverter
-  
-  
   def initialize( args )
     init_result = ( args.length == 1 ) ? init_from_yaml( args ) : init_from_command_line( args )
 
-    if ( init_result && @database_name && @username && @password )
+    puts ">> #{@password.nil?}"
+
+    if ( init_result && @database_name && @username )
       @file_deletion_delay = 10
       @output_file, @sqlite_database = @database_name + ".sql", @database_name + ".sqlite"
     else
-      puts "ERROR: Failed to initialize MySQL2SqliteConverter" 
+      puts "ERROR: Failed to initialize MySQL2SqliteConverter." 
       exit
     end
   end
@@ -104,7 +104,9 @@ private
   def generate_mysqldump_str()
     table_str = ( nil != @tables ) ? @tables.join( ' ' ) : ''
 
-    mysqldump_str = "mysqldump -u #{@username} -p#{@password} --compact --compatible=ansi --complete-insert --skip-extended-insert --default-character-set=binary #{@database_name} " + table_str
+    mysqldump_str = "mysqldump -u #{@username} --compact --compatible=ansi --complete-insert --skip-extended-insert --default-character-set=binary #{@database_name} " + table_str
+    mysqldump_str += "-p#{@password}" if @password
+    
     return mysqldump_str
   end
   
