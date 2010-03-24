@@ -104,7 +104,7 @@ private
   def generate_mysqldump_str()
     table_str = ( nil != @tables ) ? @tables.join( ' ' ) : ''
 
-    mysqldump_str = "mysqldump -u #{@username} --compact --compatible=ansi --complete-insert --skip-extended-insert --default-character-set=binary #{@database_name} " + table_str
+    mysqldump_str = "mysqldump5 -u #{@username} --compact --compatible=ansi --complete-insert --skip-extended-insert --default-character-set=binary #{@database_name} " + table_str
     mysqldump_str += "-p#{@password}" if @password
     
     return mysqldump_str
@@ -122,14 +122,15 @@ private
   
   # Replaces the MySQL terms with Sqlite-friendly terms
   def translate_sql_differences( line )
-    line.gsub!( /unsigned /, '' )
-    line.gsub!( /auto_increment/, ' primary key' )
-    line.gsub!( /smallint\([0-9]*\)/, 'integer' )
-    line.gsub!( /tinyint\([0-9]*\)/, 'integer' )
-    line.gsub!( /int\([0-9]*\)/, 'integer' )
-    line.gsub!( /character set [^ ]*/, '' )
-    line.gsub!( /enum\([^)]*\)/, 'varchar(255)' )
-    line.gsub!( /on update [^,]*/, '' )
+    line.gsub!( /unsigned /i, '' )
+    line.gsub!( /auto_increment/i, ' primary key' )
+    line.gsub!( /smallint\([0-9]*\)/i, 'integer' )
+    line.gsub!( /tinyint\([0-9]*\)/i, 'integer' )
+    line.gsub!( /int\([0-9]*\)/i, 'integer' )
+    line.gsub!( /character set [^ ]*/i, '' )
+    line.gsub!( /enum\([^)]*\)/i, 'varchar(255)' )
+    line.gsub!( /on update [^,]*/i, '' )
+    line.gsub!( /collate [^\s]+/i, '')
     
     return line
   end
