@@ -52,6 +52,7 @@ class MySQL2SqliteConverter
 
       complete_str = arr.join( '' )
       complete_str.gsub!( /,\n\);/, "\);\n" )
+      complete_str.gsub!( /\\r\\n/, "\r\n" )
 
       puts "Writing out to: #{@output_file}"
       File.open( @output_file, 'w') { |f| f.write( complete_str ) }
